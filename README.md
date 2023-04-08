@@ -17,4 +17,4 @@ The data presented is the result of querying https://api.met.no API. Displaying 
     "London Heathrow Airport (EGLL)" above is the label description that will be shown when combo box is pressed, as an option.
 
 
-3.Enjoy.
+3. Enjoy.
