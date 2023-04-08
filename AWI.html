@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Airport Weather Information</title>
+  </head>
+  <body>
+    <h1>Airport Weather Information</h1>
+	<h2>Information retrevied form MET Norway Weather API (https://api.met.no/) - be responsible, DON'T hit the server with continuos requests.</h2>
+	<p style="background-color: black; color: red;"><h3>NOTICE - This webpage provides weather information for aviation enthusiasts only and should NEVER be considered 
+		as a reference for decision-making on any subject that is related to aviation, in any way or form. The data presented 
+		must not be used especially for planning flights, carrying out flights, flights in progress, cancel flight or any other critical or non-critical 
+		decision, whether or not it puts property, infrastructure and people at risk, either on land or in the air.
+
+		The data presented is the result of querying https://api.met.no API. Displaying it on this page does not guarantee 
+		that the sate is accurate, error-free and up-to-date.</h3></p>
+
+	<h3><p style="background-color: black; color: red;"><h3>Consider it as a proof of concept. NO WARRANTIES!!!</h3></p>
+
+	<form>
+      <label for="airport-select">Select an airport:</label>
+      <select id="airport-select">
+        <option value="38.7742,-9.1342">Lisbon Airport (LPPT)</option>
+        <option value="40.6400,-73.7789">John F. Kennedy International Airport (KJFK)</option>
+        <option value="51.4700,-0.4543">London Heathrow Airport (EGLL)</option>
+      </select>
+      <button type="button" onclick="getWeatherData()">Get Weather Information</button>
+    </form>
+
+    <div id="weather-container"></div>
+
+    <script>
+      const weatherContainer = document.getElementById("weather-container");
+
+      const apiUrl = "https://api.met.no/weatherapi/locationforecast/2.0/";
+
+      function getWeatherData() {
+        const airportSelect = document.getElementById("airport-select");
+        const [latitude, longitude] = airportSelect.value.split(",");
+        fetch(`${apiUrl}?lat=${latitude}&lon=${longitude}`)
+          .then(response => response.json())
+          .then(data => {
+           
+			// extract the relevant weather information from the API response
+            const forecastData = data.properties.timeseries[0].data.instant.details;
+            const temperature = forecastData.air_temperature;
+            const windSpeed = forecastData.wind_speed;
+            const precipitation = forecastData.precipitation_amount;
+            const cloudCover = forecastData.cloud_area_fraction;
+            const humidity = forecastData.relative_humidity;
+			const airPressure = forecastData.air_pressure_at_sea_level;
+			const dewPointTemperature = forecastData.dew_point_temperature;
+			const fogAreaFraction = forecastData.fog_area_fraction;
+			const windDirection = forecastData.wind_from_direction;
+			const windGust = forecastData.wind_speed_of_gust;
+
+            // create elements to display the weather information
+            const temperatureElement = document.createElement("p");
+            temperatureElement.innerText = `Temperature: ${temperature}°C`;
+
+            const windSpeedElement = document.createElement("p");
+            windSpeedElement.innerText = `Wind speed: ${windSpeed} m/s`;
+
+            const precipitationElement = document.createElement("p");
+            precipitationElement.innerText = `Precipitation: ${precipitation} mm/h`;
+
+            const cloudCoverElement = document.createElement("p");
+            cloudCoverElement.innerText = `Cloud cover: ${cloudCover}%`;
+
+            const humidityElement = document.createElement("p");
+            humidityElement.innerText = `Relative humidity: ${humidity}%`;
+
+			const airPressureElement = document.createElement("p");
+			airPressureElement.innerText = `Air Pressure: ${airPressure} hPa`;
+			
+			const dewPointTemperatureElement = document.createElement("p");
+			dewPointTemperatureElement.innerText = `Dew Point Temperature: ${dewPointTemperature} °C`;
+
+			const fogAreaFractionElement = document.createElement("p");
+			fogAreaFractionElement.innerText = `Fog Area Fraction: ${fogAreaFraction}%`;
+
+			const windDirectionElement = document.createElement("p");
+			windDirectionElement.innerText = `Wind Direction: ${windDirection}°`;
+
+			const windGustElement = document.createElement("p");
+			windGustElement.innerText = `Wind Gust: ${windGust} m/s`;
+
+            // create an element to display the time and date when the weather information was retrieved
+            const date = new Date();
+            const dateElement = document.createElement("p");
+            dateElement.innerText = `Information retrieved on ${date.toLocaleDateString()} at ${date.toLocaleTimeString()}`;
+
+            // clear the previous weather information elements
+            weatherContainer.innerHTML = "";
+
+            // append the weather information elements and date element to the weather container
+            weatherContainer.appendChild(dateElement);
+            weatherContainer.appendChild(temperatureElement);
+            weatherContainer.appendChild(windSpeedElement);
+            weatherContainer.appendChild(precipitationElement);
+            weatherContainer.appendChild(cloudCoverElement);
+            weatherContainer.appendChild(humidityElement);
+			weatherContainer.appendChild(airPressureElement);
+			weatherContainer.appendChild(dewPointTemperatureElement);
+			weatherContainer.appendChild(fogAreaFractionElement);
+			weatherContainer.appendChild(windDirectionElement);
+			weatherContainer.appendChild(windGustElement);
+
+		
+          })
+          .catch(error => console.error(error));
+      }
+    </script>
+  </body>
+</html>
